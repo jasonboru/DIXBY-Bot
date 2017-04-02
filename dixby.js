@@ -64,7 +64,28 @@ function dixbyCommand(command) {
 }
 
 function twitterCall() {
-	console.log("twitter call")
+	console.log("twitter call");
+
+    var parameters = {
+        screen_name: 'jasonboru',
+        count: "20"
+    };
+
+    client.get('statuses/user_timeline', parameters, function (error, tweets) {
+        if(error){
+            throw error;
+        }
+
+        for(var i = 0; i < tweets.length; i++){
+        	var tweetNum = i+1;
+        	console.log("___________Tweet# " + tweetNum + "_____________________");
+            var tweetPost = tweets[i].text + " (" + tweets[i].created_at + ")";
+            console.log(JSON.stringify(tweetPost));
+            console.log("________________________________________");
+            console.log("");
+        }
+
+    })
 }
 
 function spotifyCall() {
