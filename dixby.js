@@ -16,7 +16,8 @@ const keys = require('./keys.js');
 const client = new Twitter(keys.twitterKeys);
 
 const userCommand = process.argv[2];  				//3rd argument [index 2] at terminal becomes dixbyCommand
-const userData = process.argv.slice(3).join(" ");	//grabs all term typed in 4th argument and on 
+var userData = process.argv.slice(3).join(" ");	//grabs all term typed in 4th argument and on 
+var dataArray = [];
 
 console.log("__________userData__________");
 console.log(userData);
@@ -71,7 +72,46 @@ function spotifyCall() {
 }
 
 function omdbCall() {
-	console.log("omdb call")
+	//console.log("omdb call")
+
+    var movie = userData/*.replace(/\s/g, "+")*/ ;
+
+    if(movie === ""){
+        movie = "mr+nobody";
+    }
+
+    var omdbUrl = 'http://www.omdbapi.com/?t=' + movie + '&y=&plot=short&tomatoes=true&r=json';
+
+	console.log("__________omdb_url__________");
+	console.log(omdbUrl);
+	console.log("____________________________");
+
+    request(omdbUrl, function (err, response, body) {
+        if(err){
+            throw err;
+        }
+
+        var data = JSON.parse(body);
+
+        console.log("");
+		console.log("____________Movie Info__________________");
+		console.log("");
+        console.log("Title: " + data.Title);
+        console.log("Release Year: " + data.Year);
+        console.log("IMDB Rating: " + data.imdbRating);
+        console.log("Origin Country: " + data.Country);
+        console.log("Language: " + data.Language);
+        console.log("");
+        console.log("Plot: " + data.Plot);
+        console.log("");
+        console.log("Actors: " + data.Actors.toString(", "));
+        console.log("");
+        console.log("Rotten Tomatoes Rating: " + data.Ratings[1].Value);
+        console.log("Rotten Tomatoes URL: " + data.tomatoURL);
+        console.log("________________________________________");
+
+        //console.log(JSON.stringify(dataArray, null, 2));
+    });
 }
 
 function randomCall() {
