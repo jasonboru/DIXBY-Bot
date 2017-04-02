@@ -6,22 +6,22 @@ const request = require('request');
 const inquirer = require("inquirer");
 
 //npm packages to get APi info from twitter & spotify
-const Twitter = require('twitter');
-const Spotify = require('spotify');
+const twitter = require('twitter');
+const spotify = require('spotify');
 
 //grab twitter keys form the keys.js file
 const keys = require('./keys.js');
  
 //new Twitter api call
-const client = new Twitter(keys.twitterKeys);
+const client = new twitter(keys.twitterKeys);
 
 const userCommand = process.argv[2];  				//3rd argument [index 2] at terminal becomes dixbyCommand
 var userData = process.argv.slice(3).join(" ");	//grabs all term typed in 4th argument and on 
 var dataArray = [];
 
-console.log("__________userData__________");
-console.log(userData);
-console.log("____________________________");
+//console.log("__________userData__________");
+//console.log(userData);
+//console.log("____________________________");
 
 function dixbyCommand(command) {
 
@@ -68,7 +68,37 @@ function twitterCall() {
 }
 
 function spotifyCall() {
-	console.log("spotify call")
+	//console.log("spotify call")
+
+    var song = userData;
+
+    if(song === ""){
+        song = "the+sign+ace+of+base"
+    }
+
+    var param = {
+        type: "track",
+        query: song
+    };
+
+    spotify.search(param, function (err, data) {
+        if(err){
+            throw err;
+        }
+
+        //console.log("*********spotify-data***************");
+        //console.log(JSON.stringify(data.tracks.items[0],  null, 2));
+        //console.log("************************************");        
+
+        console.log("");
+		console.log("____________Song Info__________________");
+		console.log("");
+        console.log("Artist: " + data.tracks.items[0].artists[0].name);
+        console.log("Song Name: " + data.tracks.items[0].name);
+        console.log("Preview URL: " + data.tracks.items[0].preview_url);
+        console.log("Album: " + data.tracks.items[0].album.name);
+        console.log("________________________________________");
+    });
 }
 
 function omdbCall() {
@@ -82,9 +112,9 @@ function omdbCall() {
 
     var omdbUrl = 'http://www.omdbapi.com/?t=' + movie + '&y=&plot=short&tomatoes=true&r=json';
 
-	console.log("__________omdb_url__________");
-	console.log(omdbUrl);
-	console.log("____________________________");
+	//console.log("__________omdb_url__________");
+	//console.log(omdbUrl);
+	//console.log("____________________________");
 
     request(omdbUrl, function (err, response, body) {
         if(err){
@@ -104,7 +134,7 @@ function omdbCall() {
         console.log("");
         console.log("Plot: " + data.Plot);
         console.log("");
-        console.log("Actors: " + data.Actors.toString(", "));
+        console.log("Actors: " + data.Actors);
         console.log("");
         console.log("Rotten Tomatoes Rating: " + data.Ratings[1].Value);
         console.log("Rotten Tomatoes URL: " + data.tomatoURL);
