@@ -4,6 +4,7 @@ const fs = require('fs');
 //npm packages for OMDB request and inquirer to ask questions
 const request = require('request');
 const inquirer = require("inquirer");
+const moment = require('moment');
 
 //npm packages to get APi info from twitter & spotify
 const twitter = require('twitter');
@@ -16,7 +17,8 @@ const keys = require('./keys.js');
 const client = new twitter(keys.twitterKeys);
 
 const userCommand = process.argv[2]; //3rd argument [index 2] at terminal becomes dixbyCommand
-var userData = process.argv.slice(3).join(" "); //grabs all term typed in 4th argument and on 
+var userData = process.argv.slice(3).join(" "); //grabs all terms typed in 4th argument and on
+
 var dataArray = [];
 
 //console.log("__________userData__________");
@@ -77,15 +79,17 @@ function twitterCall() {
         }
 
         for (var i = 0; i < tweets.length; i++) {
+        	var tweetTime = moment(new Date(tweets[i].created_at));
             var tweetNum = i + 1;
-            console.log("___________Tweet# " + tweetNum + "_____________________");
-            var tweetPost = tweets[i].text + " (" + tweets[i].created_at + ")";
+            console.log("___________Tweet# " + tweetNum + "_____________________");            
+            var tweetPost = tweets[i].text 
+            var tweetTimeStamp = tweetTime.format("dddd, MMMM Do YYYY, h:mm:ss a");
             console.log(JSON.stringify(tweetPost));
+            console.log("(" + JSON.stringify(tweetTimeStamp) + ")");
             console.log("________________________________________");
             console.log("");
         }
-
-    })
+    });
 }
 
 function spotifyCall() {
@@ -133,37 +137,53 @@ function omdbCall() {
 
     var omdbUrl = 'http://www.omdbapi.com/?t=' + movie + '&y=&plot=short&tomatoes=true&r=json';
 
-    //console.log("__________omdb_url__________");
-    //console.log(omdbUrl);
-    //console.log("____________________________");
+    console.log("__________omdb_url__________");
+    console.log(omdbUrl);
+    console.log("____________________________");
 
     request(omdbUrl, function(err, response, body) {
-        if (err) {
-            throw err;
-        }
+        if (!err && response.statusCode === 200) {
 
-        var data = JSON.parse(body);
+	        var data = JSON.parse(body);
 
-        console.log("");
-        console.log("____________Movie Info__________________");
-        console.log("");
-        console.log("Title: " + data.Title);
-        console.log("Release Year: " + data.Year);
-        console.log("IMDB Rating: " + data.imdbRating);
-        console.log("Origin Country: " + data.Country);
-        console.log("Language: " + data.Language);
-        console.log("");
-        console.log("Plot: " + data.Plot);
-        console.log("");
-        console.log("Actors: " + data.Actors);
-        console.log("");
-        if (data.Ratings[1] === undefined) {
-            console.log("Rotten Tomatoes Rating: N/A")
-        } else {
-            console.log("Rotten Tomatoes Rating: " + data.Ratings[1].Value);
-        }
-        console.log("Rotten Tomatoes URL: " + data.tomatoURL);
-        console.log("________________________________________");
+	        logEntry.title = data.Title;
+		    logEntry.released = data.Year;	    	
+		    logEntry.imdbRating = data.imdbRating;	    	
+		    logEntry.country = data.Country;	    	
+		    logEntry.language = data.Language;
+		    logEntry.plot = data.Plot;
+		    logEntry.actors = data.Actors;
+		    logEntry.tomatoRating = data.Ratings[1].Value;
+		    logEntry.tomatoURL = data.tomatoURL;
+
+	        console.log("");
+	        console.log("____________Movie Info__________________");
+	        console.log("");
+	        console.log("Title: " + logEntry.title);
+	        console.log("Release Year: " + logEntry.released);
+	        console.log("IMDB Rating: " + logEntry.imdbRating);
+	        console.log("Origin Country: " + logEntry.country);
+	        console.log("Language: " + logEntry.Language);
+	        console.log("");
+	        console.log("Plot: " + logEntry.plot);
+	        console.log("");
+	        console.log("Actors: " + logEntry.actors);
+	        console.log("");
+	        if (data.Ratings[1] === undefined) {
+	            console.log("Rotten Tomatoes Rating: N/A")
+	        } else {
+	            console.log("Rotten Tomatoes Rating: " + logEntry.tomatoRating);
+	        }
+	        console.log("Rotten Tomatoes URL: " + data.tomatoURL);
+	        console.log("________________________________________");
+	        logEntry.response = 'success';
+	    } else {
+	    	throw err
+	    	logEntry.error= true;
+	    }
+
+	logData(logEntry);
+
     });
 }
 
@@ -189,4 +209,31 @@ function randomCall() {
 
 }
 
+function logData(object) {
+	if (!fs.existsSync('log.txt')) {
+		fs.writeFileSync('log.txt', "[" + JSON.stringify(object) + "]");
+	} else {
+		fs.readFile('log.txt', 'utf-8', (err, data) => {
+			if (err) {
+				console.log(err);
+			}
+
+			var arr = JSON.parse(data);
+
+			arr.push(object);
+
+			fs.writeFile('log.txt', JSON.stringify(arr), (err) => {
+  				if (err) throw err;
+  			});
+			
+		});
+	}
+}
+
+var logTimeStamp = moment(new Date());
+var logEntry = {
+	logTimestamp: logTimeStamp, 
+	command: userCommand, 
+	error: false
+};
 dixbyCommand(userCommand);
