@@ -19,12 +19,11 @@ const client = new twitter(keys.twitterKeys);
 const userCommand = process.argv[2]; //3rd argument [index 2] at terminal becomes dixbyCommand
 var userData = process.argv.slice(3).join(" "); //grabs all terms typed in 4th argument and on
 
-var dataArray = [];
-
 //console.log("__________userData__________");
 //console.log(userData);
 //console.log("____________________________");
 
+//Switch statement to run the right function based off the command by the user
 function dixbyCommand(command) {
 
     switch (command) {
@@ -65,19 +64,19 @@ function dixbyCommand(command) {
     }
 }
 
+//function to call to twitter for last 20 tweets
 function twitterCall() {
-    //console.log("twitter call");
-
+    //parameters object used in twitter call
     var parameters = {
-        screen_name: 'realDonaldTrump',
+        screen_name: 'jasonboru',
         count: "20"
     };
-
+    //twitter call based on their docs
     client.get('statuses/user_timeline', parameters, function(error, tweets) {
         if (error) {
             throw error;
         }
-
+        //loop through the rturned tweets to print each one.
         for (var i = 0; i < tweets.length; i++) {
         	var tweetTime = moment(new Date(tweets[i].created_at));
         	var tweetTimeStamp = tweetTime.format("dddd, MMMM Do YYYY, h:mm:ss a");
@@ -90,13 +89,16 @@ function twitterCall() {
             console.log("");
             console.log("");
         }
+        // add logEntry to log.txt
+        logEntry.tweetsReturned = tweets.length;
+        logData(logEntry);
     });
 }
 
+// function to call spotify for song info
 function spotifyCall() {
-    //console.log("spotify call")
 
-    var song = userData;
+    var song = userData; 
 
     if (song === "") {
         song = "the+sign+ace+of+base"
@@ -136,10 +138,10 @@ function spotifyCall() {
     });
 }
 
+// function to call spotify for song info
 function omdbCall() {
-    //console.log("omdb call")
-
-    var movie = userData /*.replace(/\s/g, "+")*/ ;
+    
+    var movie = userData;
 
     if (movie === "") {
         movie = "mr+nobody";
@@ -197,53 +199,58 @@ function omdbCall() {
     });
 }
 
+// function to call a random command from random.txt
 function randomCall() {
-    //console.log("random call")
 
     fs.readFile('random.txt', 'utf-8', function(err, data) {
         if (err) {
             throw err;
         } else {
-            // console.log(data);
-            var commandList = data.split("|");
-            var randomIndex = Math.floor(Math.random() * commandList.length);
-            var randomChoice = commandList[randomIndex].split(",");
-            var randomCommand = randomChoice[0];
-            if (randomChoice[1]) {
-                userData = randomChoice[1];
+            var commandList = data.split("|");                                  //splits the array in random.txt by the |
+            var randomIndex = Math.floor(Math.random() * commandList.length);   //generates a random index of the array based on its length
+            var randomChoice = commandList[randomIndex].split(",");             //grabs argv2 (and argv3 if its there then splits it by the comma)
+            var randomCommand = randomChoice[0];                                //random command becomes the first index of randomChoice
+            if (randomChoice[1]) {                                              //if there is a 2nd index in randomChoice....
+                userData = randomChoice[1];                                     //use the sencond index of randomChoice as userData
             }
 
-            dixbyCommand(randomCommand);
+            dixbyCommand(randomCommand);                                        //call dixbyCommand function based of randomCommand
         }
     });
 
 }
 
+// function to add info to the log.txt file
 function logData(object) {
-	if (!fs.existsSync('log.txt')) {
-		fs.writeFileSync('log.txt', "[" + JSON.stringify(object) + "]");
+	if (!fs.existsSync('log.txt')) {                                           //check to see if log.txt exists
+		fs.writeFileSync('log.txt', "[" + JSON.stringify(object) + "]");       // if not create the file and add the argument passed into it when called
 	} else {
-		fs.readFile('log.txt', 'utf-8', (err, data) => {
+		fs.readFile('log.txt', 'utf-8', function(err, data) {                  // else the file already exist read it to get current data
 			if (err) {
 				console.log(err);
 			}
 
-			var arr = JSON.parse(data);
+			var arr = JSON.parse(data);                                        // variable for the existing data in file
 
-			arr.push(object);
+			arr.push(object);                                                  // push the argument into the array taken from log.txt 
 
-			fs.writeFile('log.txt', JSON.stringify(arr), (err) => {
-  				if (err) throw err;
+			fs.writeFile('log.txt', JSON.stringify(arr), function(err) {       // re-write the new more complete arr onto the log.txt file
+  				if (err) {
+                    throw err;
+                }
   			});
 			
 		});
 	}
 }
 
-var logTimeStamp = moment(new Date());
-var logEntry = {
+var logTimeStamp = moment(new Date());                                         // use moment() to grab the current time at submission
+    logTimeStamp = logTimeStamp.format("dddd, MMMM Do YYYY, h:mm:ss a");       // use moment to format the date more readable
+var logEntry = {                                                               // every log entry will have a timestamp, the command used, and error status
 	logTimestamp: logTimeStamp, 
 	command: userCommand, 
 	error: false
 };
-dixbyCommand(userCommand);
+
+//calls the dixbyCommand function on userCommand
+dixbyCommand(userCommand);                  
