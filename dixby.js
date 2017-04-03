@@ -69,7 +69,7 @@ function twitterCall() {
     //console.log("twitter call");
 
     var parameters = {
-        screen_name: 'jasonboru',
+        screen_name: 'realDonaldTrump',
         count: "20"
     };
 
@@ -80,13 +80,14 @@ function twitterCall() {
 
         for (var i = 0; i < tweets.length; i++) {
         	var tweetTime = moment(new Date(tweets[i].created_at));
+        	var tweetTimeStamp = tweetTime.format("dddd, MMMM Do YYYY, h:mm:ss a");
             var tweetNum = i + 1;
-            console.log("___________Tweet# " + tweetNum + "_____________________");            
-            var tweetPost = tweets[i].text 
-            var tweetTimeStamp = tweetTime.format("dddd, MMMM Do YYYY, h:mm:ss a");
+            console.log("___________Tweet# " + tweetNum + "____"+ "(" + JSON.stringify(tweetTimeStamp) + ")" +"____________"); 
+            console.log("");           
+            var tweetPost = tweets[i].text            
             console.log(JSON.stringify(tweetPost));
-            console.log("(" + JSON.stringify(tweetTimeStamp) + ")");
-            console.log("________________________________________");
+            console.log("______________________________________________________________________");
+            console.log("");
             console.log("");
         }
     });
@@ -108,21 +109,30 @@ function spotifyCall() {
 
     spotify.search(param, function(err, data) {
         if (err) {
+        	logEntry.error= true;
             throw err;
         }
 
         //console.log("*********spotify-data***************");
         //console.log(JSON.stringify(data.tracks.items[0],  null, 2));
-        //console.log("************************************");        
+        //console.log("************************************");  
+
+        logEntry.artist = data.tracks.items[0].artists[0].name;
+        logEntry.song = data.tracks.items[0].name;
+        logEntry.preview = data.tracks.items[0].preview_url; 
+        logEntry.albumn = data.tracks.items[0].album.name;     
 
         console.log("");
         console.log("____________Song Info__________________");
         console.log("");
-        console.log("Artist: " + data.tracks.items[0].artists[0].name);
-        console.log("Song Name: " + data.tracks.items[0].name);
-        console.log("Preview URL: " + data.tracks.items[0].preview_url);
-        console.log("Album: " + data.tracks.items[0].album.name);
+        console.log("Artist: " + logEntry.artist);
+        console.log("Song Name: " + logEntry.song);
+        console.log("Preview URL: " + logEntry.preview);
+        console.log("Album: " + logEntry.albumn);
         console.log("________________________________________");
+        logEntry.response = 'success';
+
+        logData(logEntry);
     });
 }
 
@@ -137,9 +147,9 @@ function omdbCall() {
 
     var omdbUrl = 'http://www.omdbapi.com/?t=' + movie + '&y=&plot=short&tomatoes=true&r=json';
 
-    console.log("__________omdb_url__________");
-    console.log(omdbUrl);
-    console.log("____________________________");
+    //console.log("__________omdb_url__________");
+    //console.log(omdbUrl);
+    //console.log("____________________________");
 
     request(omdbUrl, function(err, response, body) {
         if (!err && response.statusCode === 200) {
