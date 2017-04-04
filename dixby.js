@@ -5,6 +5,7 @@ const fs = require('fs');
 const request = require('request');
 const inquirer = require("inquirer");
 const moment = require('moment');
+const colors = require('colors');
 
 //npm packages to get APi info from twitter & spotify
 const twitter = require('twitter');
@@ -50,15 +51,15 @@ function dixbyCommand(command) {
 
         default:
             console.log("");
-            console.log("there was an error");
+            console.log("Sorry I don't understand");
             console.log("");
-            console.log("Re-enter your command.");
+            console.log("Please re-enter your command from the list below.");
             console.log("-----------------------");
             console.log("");
-            console.log("'my-tweets': will show your last 20 tweets and when they were created at in your terminal/bash window.");
-            console.log("'spotify-this-song <song title>': will show the following information about the song in your terminal/bash window");
-            console.log("'movie-this <movie title>': will output detailed movie information to your terminal/bash window");
-            console.log("'do-what-it-says': Dixby will randomly choose a command for you.");
+            console.log(colors.cyan("my-tweets")+": will show your last 20 tweets and when they were created at in your terminal/bash window.");
+            console.log(colors.green("spotify-this-song <song title>")+": will show the following information about the song in your terminal/bash window");
+            console.log(colors.magenta("movie-this <movie title>")+": will output detailed movie information to your terminal/bash window");
+            console.log(colors.yellow("do-what-it-says")+": Dixby will randomly choose a command for you.");
             console.log("");
             console.log("-----------------------");
     }
@@ -81,11 +82,11 @@ function twitterCall() {
         	var tweetTime = moment(new Date(tweets[i].created_at));
         	var tweetTimeStamp = tweetTime.format("dddd, MMMM Do YYYY, h:mm:ss a");
             var tweetNum = i + 1;
-            console.log("___________Tweet# " + tweetNum + "____"+ "(" + JSON.stringify(tweetTimeStamp) + ")" +"____________"); 
+            console.log(colors.cyan("___________Tweet# " + tweetNum + "________________"+ "(" + JSON.stringify(tweetTimeStamp) + ")")); 
             console.log("");           
             var tweetPost = tweets[i].text            
             console.log(JSON.stringify(tweetPost));
-            console.log("______________________________________________________________________");
+            console.log(colors.cyan("______________________________________________________________________"));
             console.log("");
             console.log("");
         }
@@ -117,23 +118,31 @@ function spotifyCall() {
 
         //console.log("*********spotify-data***************");
         //console.log(JSON.stringify(data.tracks.items[0],  null, 2));
-        //console.log("************************************");  
+        //console.log("************************************"); 
 
-        logEntry.artist = data.tracks.items[0].artists[0].name;
-        logEntry.song = data.tracks.items[0].name;
-        logEntry.preview = data.tracks.items[0].preview_url; 
-        logEntry.albumn = data.tracks.items[0].album.name;     
+        var songData = data.tracks.items 
 
-        console.log("");
-        console.log("____________Song Info__________________");
-        console.log("");
-        console.log("Artist: " + logEntry.artist);
-        console.log("Song Name: " + logEntry.song);
-        console.log("Preview URL: " + logEntry.preview);
-        console.log("Album: " + logEntry.albumn);
-        console.log("________________________________________");
-        logEntry.response = 'success';
+        for (i=0; i<songData.length; i++) {
 
+            //logEntry.artist = data.tracks.items[i].artists[0].name;
+            //logEntry.song = data.tracks.items[i].name;
+            //logEntry.preview = data.tracks.items[i].preview_url; 
+            //logEntry.albumn = data.tracks.items[i].album.name;
+
+            var songNum = i+1;     
+
+            console.log("");
+            console.log(colors.green("_________Song Info #"+songNum+"__________________"));
+            console.log("");
+            console.log(colors.green("Artist: ") + songData[i].artists[0].name);
+            console.log(colors.green("Song Name: ") + songData[i].name);
+            console.log(colors.green("Preview URL: ") + songData[i].preview_url);
+            console.log(colors.green("Album: ") + songData[i].album.name);
+            console.log(colors.green("________________________________________"));
+            logEntry.response = 'success';
+        }
+
+        logEntry.songsReturned = songData.length
         logData(logEntry);
     });
 }
@@ -169,25 +178,25 @@ function omdbCall() {
 		    logEntry.tomatoURL = data.tomatoURL;
 
 	        console.log("");
-	        console.log("____________Movie Info__________________");
+	        console.log(colors.magenta("____________Movie Info__________________"));
 	        console.log("");
-	        console.log("Title: " + logEntry.title);
-	        console.log("Release Year: " + logEntry.released);
-	        console.log("IMDB Rating: " + logEntry.imdbRating);
-	        console.log("Origin Country: " + logEntry.country);
-	        console.log("Language: " + logEntry.Language);
+	        console.log(colors.magenta("Title: ") + logEntry.title);
+	        console.log(colors.magenta("Release Year: ") + logEntry.released);
+	        console.log(colors.magenta("IMDB Rating: ") + logEntry.imdbRating);
+	        console.log(colors.magenta("Origin Country: ") + logEntry.country);
+	        console.log(colors.magenta("Language: ") + logEntry.Language);
 	        console.log("");
-	        console.log("Plot: " + logEntry.plot);
+	        console.log(colors.magenta("Plot: ") + logEntry.plot);
 	        console.log("");
-	        console.log("Actors: " + logEntry.actors);
+	        console.log(colors.magenta("Actors: ") + logEntry.actors);
 	        console.log("");
 	        if (data.Ratings[1] === undefined) {
-	            console.log("Rotten Tomatoes Rating: N/A")
+	            console.log(colors.magenta("Rotten Tomatoes Rating:")+ "N/A");
 	        } else {
-	            console.log("Rotten Tomatoes Rating: " + logEntry.tomatoRating);
+	            console.log(colors.magenta("Rotten Tomatoes Rating: ") + logEntry.tomatoRating);
 	        }
-	        console.log("Rotten Tomatoes URL: " + data.tomatoURL);
-	        console.log("________________________________________");
+	        console.log(colors.magenta("Rotten Tomatoes URL: ") + data.tomatoURL);
+	        console.log(colors.magenta("________________________________________"));
 	        logEntry.response = 'success';
 	    } else {
 	    	throw err
