@@ -9,14 +9,14 @@ For this assignment, I made DIXBY. DIXBY is like iPhone's SIRI. However, while S
 1. Fork or clone this repo to your local machine.
 
 2. Install the needed node packages (homework assigned).
-   * request: npm install request --save
-   * spotify: npm install spotify --save
-   * twitter: npm install twitter --save
+   * [Twitter](https://www.npmjs.com/package/twitter)
+   * [Spotify](https://www.npmjs.com/package/spotify)
+   * [Request](https://www.npmjs.com/package/request)
 
 3. Install the needed node packages (extra ones I choose to use).
-   * colors: npm install colors --save
-   * inquirer: npm install inquirer --save
-   * moment: npm install moment --save
+   * [Colors](https://www.npmjs.com/package/colors) - used to color the text and make it more readable.
+   * [Inquirer](https://www.npmjs.com/package/inquirer) - used to ask for a handle on the my-tweets command.
+   * [Moment](https://www.npmjs.com/package/moment) - used to format the timestamps on tweets and timestamps in log.txt.
 
 ### Instructions
 
@@ -58,7 +58,7 @@ exports.twitterKeys = {
 
 1. `node dixby.js my-tweets`
 
-   * This will return my last 20 tweets (and when they were created) in your terminal/bash window. To change it to your account change the screen_name property within the parameters object inside of the twitterCall function in dixby.js.
+   * This command will prompt Dixby to ask for a twitter handle and then return the last 20 tweets (and when they were created) of that handle. If a handle is not typed in it will deafault to my twitter handle jasonboru. If you want to change the default to your own handle just type it into the default property inside the inquirer.prompt within the twtterCall function inside dixby.js.
 
 2. `node dixby.js spotify-this-song '<song name here>'`
 
