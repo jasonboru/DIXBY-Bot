@@ -191,7 +191,9 @@ function omdbCall() {
 		    logEntry.language = data.Language;
 		    logEntry.plot = data.Plot;
 		    logEntry.actors = data.Actors;
-		    logEntry.tomatoRating = data.Ratings[1].Value;
+		    if (data.Ratings[1] !== undefined){
+                logEntry.tomatoRating = data.Ratings[1].Value;
+            }
 		    logEntry.tomatoURL = data.tomatoURL;
 
 	        console.log("");
