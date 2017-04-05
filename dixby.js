@@ -26,27 +26,28 @@ var userData = process.argv.slice(3).join(" "); //grabs all terms typed in 4th a
 
 //Switch statement to run the right function based off the command by the user
 function dixbyCommand(command) {
+    var waitMsg;
 
     switch (command) {
 
         case 'my-tweets':
-            console.log("Here are your last 20 tweets: ");
-            twitterCall();
+            console.log("OK Dixby will retrieve tweets for you...");
+            waitMsg = setTimeout(twitterCall, 1000);
             break;
 
         case 'spotify-this-song':
-            console.log("Here is some information on your song.");
-            spotifyCall();
+            console.log("OK Dixby is looking up songs that match your search term...");
+            waitMsg = setTimeout(spotifyCall, 1000);
             break;
 
         case 'movie-this':
-            console.log("Here is some information on your movie.");
-            omdbCall();
+            console.log("OK Dixby is looking up a movie based on your search term...");
+            waitMsg = setTimeout(omdbCall, 1000);
             break;
 
         case 'do-what-it-says':
-            console.log("Random choice...");
-            randomCall();
+            console.log("Dixby will be happy to choose for you. Ready...Set...");
+            waitMsg = setTimeout(randomCall, 1000);
             break;
 
         default:
@@ -104,6 +105,7 @@ inquirer.prompt([
                 console.log("");
             }
             // add logEntry to log.txt
+            logEntry.handle = data.name;
             logEntry.tweetsReturned = tweets.length;
             logData(logEntry);
         });
@@ -156,6 +158,7 @@ function spotifyCall() {
             logEntry.response = 'success';
         }
 
+        logEntry.searchTerm = userData;
         logEntry.songsReturned = songData.length
         logData(logEntry);
     });
