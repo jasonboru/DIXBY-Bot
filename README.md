@@ -9,9 +9,6 @@ For this assignment, I made DIXBY. DIXBY is like iPhone's SIRI. However, while S
 1. Fork or clone this repo to your local machine.
 
 2. Install the needed node packages (homework assigned).
-   * colors: npm install colors --save
-   * inquirer: npm install inquirer --save
-   * moment: npm install moment --save
    * request: npm install request --save
    * spotify: npm install spotify --save
    * twitter: npm install twitter --save
@@ -23,7 +20,7 @@ For this assignment, I made DIXBY. DIXBY is like iPhone's SIRI. However, while S
 
 ### Instructions
 
-1. Make your own JavaScript file named `keys.js`. Twitter assigns user specific keys & secrets. Contact Twitter to get you own and add them to the keys.js file in the following format:
+1. Make your own JavaScript file named `keys.js`. Twitter assigns user specific keys & secrets. Contact Twitter to get your own and add them to the keys.js file in the following format:
 
 ```JavaScript
 console.log('this is loaded');
@@ -57,11 +54,11 @@ exports.twitterKeys = {
 
    * `do-what-it-says`
 
-### What Each Command Should Do
+### What Each Command Will Do
 
 1. `node dixby.js my-tweets`
 
-   * This will return my last 20 tweets and when they were created at in your terminal/bash window. To change it to your account change the screen_name property within the parameters object inside of the twitterCall function.
+   * This will return my last 20 tweets (and when they were created) in your terminal/bash window. To change it to your account change the screen_name property within the parameters object inside of the twitterCall function in dixby.js.
 
 2. `node dixby.js spotify-this-song '<song name here>'`
 
@@ -95,7 +92,7 @@ exports.twitterKeys = {
      * It's on Netflix!
 
 4. `node dixby.js do-what-it-says`
-   * Using the `fs` Node package, DIXBY will take the text from inside of random.txt and then turn it to an array and pick a random command and use it to call one of DIXBY's commands.
+   * Using the `fs` Node package, DIXBY will take the text from inside of random.txt and then turn it to an array and pick a random index and use it to call one of DIXBY's commands.
      * Currenty it will run one of 3 commands randomly
      	* `spotify-this-song` for "I Want it That Way,".
      	* `my-tweets`.
@@ -105,9 +102,9 @@ exports.twitterKeys = {
 
 * In addition to logging the data to your terminal/bash window, Dixby will output the data to a .txt file called `log.txt`.
 
-* If the log.txt file does not yet exist Dixby will create it
+* If the log.txt file does not yet exist Dixby will create it and add a timestamp, command used, error true or false, and additional info.
 
-* If the file exists Dixby will log a timestamp, command used, error true or false, and additional info. It will not overwrite previous info.
+* If the file exists, Dixby will add data to it after each Dixby command. It will not overwrite previous info.
 
 - - -
 

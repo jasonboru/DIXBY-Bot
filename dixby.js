@@ -67,32 +67,46 @@ function dixbyCommand(command) {
 
 //function to call to twitter for last 20 tweets
 function twitterCall() {
-    //parameters object used in twitter call
-    var parameters = {
-        screen_name: 'jasonboru',
-        count: "20"
-    };
-    //twitter call based on their docs
-    client.get('statuses/user_timeline', parameters, function(error, tweets) {
-        if (error) {
-            throw error;
-        }
-        //loop through the rturned tweets to print each one.
-        for (var i = 0; i < tweets.length; i++) {
-        	var tweetTime = moment(new Date(tweets[i].created_at));
-        	var tweetTimeStamp = tweetTime.format("dddd, MMMM Do YYYY, h:mm:ss a");
-            var tweetNum = i + 1;
-            console.log(colors.cyan("___________Tweet# " + tweetNum + "________________"+ "(" + JSON.stringify(tweetTimeStamp) + ")")); 
-            console.log("");           
-            var tweetPost = tweets[i].text            
-            console.log(JSON.stringify(tweetPost));
-            console.log(colors.cyan("______________________________________________________________________"));
-            console.log("");
-            console.log("");
-        }
-        // add logEntry to log.txt
-        logEntry.tweetsReturned = tweets.length;
-        logData(logEntry);
+
+inquirer.prompt([
+
+    {
+        type   : "input",
+        message: "Enter a Twitter handle to search their tweets.",
+        name   : "name",
+        default: "jasonboru"
+    },
+
+    ]).then(function(data) {
+
+
+        //parameters object used in twitter call
+        var parameters = {
+            screen_name: data.name,
+            count: "20"
+        };
+        //twitter call based on their docs
+        client.get('statuses/user_timeline', parameters, function(error, tweets) {
+            if (error) {
+                throw error;
+            }
+            //loop through the rturned tweets to print each one.
+            for (var i = 0; i < tweets.length; i++) {
+            	var tweetTime = moment(new Date(tweets[i].created_at));
+            	var tweetTimeStamp = tweetTime.format("dddd, MMMM Do YYYY, h:mm:ss a");
+                var tweetNum = i + 1;
+                console.log(colors.cyan("___________Tweet# " + tweetNum + "________________"+ "(" + JSON.stringify(tweetTimeStamp) + ")")); 
+                console.log("");           
+                var tweetPost = tweets[i].text            
+                console.log(JSON.stringify(tweetPost));
+                console.log(colors.cyan("______________________________________________________________________"));
+                console.log("");
+                console.log("");
+            }
+            // add logEntry to log.txt
+            logEntry.tweetsReturned = tweets.length;
+            logData(logEntry);
+        });
     });
 }
 
