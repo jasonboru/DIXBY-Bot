@@ -96,9 +96,9 @@ inquirer.prompt([
             	var tweetTime = moment(new Date(tweets[i].created_at));
             	var tweetTimeStamp = tweetTime.format("dddd, MMMM Do YYYY, h:mm:ss a");
                 var tweetNum = i + 1;
-                console.log(colors.cyan("___________Tweet# " + tweetNum + "________________"+ "(" + JSON.stringify(tweetTimeStamp) + ")")); 
-                console.log("");           
-                var tweetPost = tweets[i].text            
+                console.log(colors.cyan("___________Tweet# " + tweetNum + "________________"+ "(" + JSON.stringify(tweetTimeStamp) + ")"));
+                console.log("");
+                var tweetPost = tweets[i].text
                 console.log(JSON.stringify(tweetPost));
                 console.log(colors.cyan("______________________________________________________________________"));
                 console.log("");
@@ -115,7 +115,7 @@ inquirer.prompt([
 // function to call spotify for song info
 function spotifyCall() {
 
-    var song = userData; 
+    var song = userData;
 
     if (song === "") {
         song = "the+sign+ace+of+base"
@@ -134,18 +134,18 @@ function spotifyCall() {
 
         //console.log("*********spotify-data***************");
         //console.log(JSON.stringify(data.tracks.items[0],  null, 2));
-        //console.log("************************************"); 
+        //console.log("************************************");
 
-        var songData = data.tracks.items 
+        var songData = data.tracks.items
 
         for (i=0; i<songData.length; i++) {
 
             //logEntry.artist = data.tracks.items[i].artists[0].name;
             //logEntry.song = data.tracks.items[i].name;
-            //logEntry.preview = data.tracks.items[i].preview_url; 
+            //logEntry.preview = data.tracks.items[i].preview_url;
             //logEntry.albumn = data.tracks.items[i].album.name;
 
-            var songNum = i+1;     
+            var songNum = i+1;
 
             console.log("");
             console.log(colors.green("_________Song Info #"+songNum+"__________________"));
@@ -166,7 +166,7 @@ function spotifyCall() {
 
 // function to call spotify for song info
 function omdbCall() {
-    
+
     var movie = userData;
 
     if (movie === "") {
@@ -185,13 +185,13 @@ function omdbCall() {
 	        var data = JSON.parse(body);
 
 	        logEntry.title = data.Title;
-		    logEntry.released = data.Year;	    	
-		    logEntry.imdbRating = data.imdbRating;	    	
-		    logEntry.country = data.Country;	    	
+		    logEntry.released = data.Year;
+		    logEntry.imdbRating = data.imdbRating;
+		    logEntry.country = data.Country;
 		    logEntry.language = data.Language;
 		    logEntry.plot = data.Plot;
 		    logEntry.actors = data.Actors;
-		    if (data.Ratings[1] !== undefined){
+		    if (typeof data.Ratings !== "undefined"){
                 logEntry.tomatoRating = data.Ratings[1].Value;
             }
 		    logEntry.tomatoURL = data.tomatoURL;
@@ -209,7 +209,7 @@ function omdbCall() {
 	        console.log("");
 	        console.log(colors.magenta("Actors: ") + logEntry.actors);
 	        console.log("");
-	        if (data.Ratings[1] === undefined) {
+	        if (typeof data.Ratings === "undefined") {
 	            console.log(colors.magenta("Rotten Tomatoes Rating:")+ "N/A");
 	        } else {
 	            console.log(colors.magenta("Rotten Tomatoes Rating: ") + logEntry.tomatoRating);
@@ -260,14 +260,14 @@ function logData(object) {
 
 			var arr = JSON.parse(data);                                        // variable for the existing data in file
 
-			arr.push(object);                                                  // push the argument into the array taken from log.txt 
+			arr.push(object);                                                  // push the argument into the array taken from log.txt
 
 			fs.writeFile('log.txt', JSON.stringify(arr), function(err) {       // re-write the new more complete arr onto the log.txt file
   				if (err) {
                     throw err;
                 }
   			});
-			
+
 		});
 	}
 }
@@ -275,10 +275,10 @@ function logData(object) {
 var logTimeStamp = moment(new Date());                                         // use moment() to grab the current time at submission
     logTimeStamp = logTimeStamp.format("dddd, MMMM Do YYYY, h:mm:ss a");       // use moment to format the date more readable
 var logEntry = {                                                               // every log entry will have a timestamp, the command used, and error status
-	logTimestamp: logTimeStamp, 
-	command: userCommand, 
+	logTimestamp: logTimeStamp,
+	command: userCommand,
 	error: false
 };
 
 //calls the dixbyCommand function on userCommand
-dixbyCommand(userCommand);                  
+dixbyCommand(userCommand);
